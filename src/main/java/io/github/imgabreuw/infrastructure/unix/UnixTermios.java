@@ -1,4 +1,4 @@
-package io.github.imgabreuw.infrastructure.libc;
+package io.github.imgabreuw.infrastructure.unix;
 
 import com.sun.jna.Structure;
 
@@ -6,15 +6,15 @@ import java.util.Arrays;
 
 
 @Structure.FieldOrder(value = {"c_iflag", "c_oflag", "c_cflag", "c_lflag", "c_cc"})
-public class Termios extends Structure {
+public class UnixTermios extends Structure {
     public int c_iflag, c_oflag, c_cflag, c_lflag;
     public byte[] c_cc = new byte[19];
 
-    public Termios() {
+    public UnixTermios() {
     }
 
-    public static Termios of(Termios t) {
-        Termios copy = new Termios();
+    public static UnixTermios of(UnixTermios t) {
+        UnixTermios copy = new UnixTermios();
         copy.c_iflag = t.c_iflag;
         copy.c_oflag = t.c_oflag;
         copy.c_cflag = t.c_cflag;

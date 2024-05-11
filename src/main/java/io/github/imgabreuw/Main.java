@@ -2,25 +2,24 @@ package io.github.imgabreuw;
 
 import io.github.imgabreuw.commands.*;
 import io.github.imgabreuw.entities.Editor;
-import io.github.imgabreuw.gateways.LibCGateway;
-import io.github.imgabreuw.gateways.LibCGatewayImpl;
+import io.github.imgabreuw.gateways.Terminal;
 import io.github.imgabreuw.usecases.editor.EnableRawMode;
 import io.github.imgabreuw.usecases.editor.InitEditor;
 import io.github.imgabreuw.usecases.editor.OpenFile;
 import io.github.imgabreuw.usecases.keys.CommandHandler;
 import io.github.imgabreuw.usecases.screen.RefreshScreen;
 
-public class Terminal {
+public class Main {
 
     public static void main(String[] args) {
-        LibCGateway libCGateway = new LibCGatewayImpl();
+        Terminal terminal = Terminal.getInstance();
 
         var enableRawMode = new EnableRawMode();
         var originalAttributes = enableRawMode
                 .execute(new EnableRawMode.InputValues())
-                .termios();
+                .unixTermios();
 
-        var initEditor = new InitEditor(libCGateway);
+        var initEditor = new InitEditor(terminal);
         var windowSize = initEditor.execute(new InitEditor.InputValues());
 
         var openFile = new OpenFile();
@@ -40,6 +39,8 @@ public class Terminal {
         commandHandler.register("\033[D", new MoveLeftCommand(editor));
         commandHandler.register("\033[H", new MoveToHomeCommand(editor));
         commandHandler.register("\033[F", new MoveToEndCommand(editor));
+        commandHandler.register("\033[5", new PageUpCommand(editor));
+        commandHandler.register("\033[6", new PageDownCommand(editor));
 
         while (true) {
             editor.scroll();

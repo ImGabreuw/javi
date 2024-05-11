@@ -1,9 +1,9 @@
-package io.github.imgabreuw.infrastructure.libc;
+package io.github.imgabreuw.infrastructure.unix;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 
-public interface LibC extends Library {
+public interface UnixLibC extends Library {
 
     int SYSTEM_OUT_FD = 0;
 
@@ -20,12 +20,12 @@ public interface LibC extends Library {
             TIOCGWINSZ = 0x5413;
 
 
-    LibC INSTANCE = Native.load("c", LibC.class);
+    UnixLibC INSTANCE = Native.load("c", UnixLibC.class);
 
-    int tcgetattr(int fd, Termios termios);
+    int tcgetattr(int fd, UnixTermios unixTermios);
 
     int tcsetattr(int fd, int optional_actions,
-                  Termios termios);
+                  UnixTermios unixTermios);
 
-    int ioctl(int fd, int opt, Winsize winsize);
+    int ioctl(int fd, int opt, UnixWinsize unixWinsize);
 }

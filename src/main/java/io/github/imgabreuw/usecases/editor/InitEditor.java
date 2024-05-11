@@ -1,20 +1,20 @@
 package io.github.imgabreuw.usecases.editor;
 
-import io.github.imgabreuw.gateways.LibCGateway;
+import io.github.imgabreuw.gateways.Terminal;
 import io.github.imgabreuw.usecases.UseCase;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class InitEditor implements UseCase<InitEditor.InputValues, InitEditor.OutputValues> {
 
-    private final LibCGateway libCGateway;
+    private final Terminal terminal;
 
     @Override
     public OutputValues execute(InputValues input) {
-        var windowSize = libCGateway.getWindowSize();
+        var windowSize = terminal.getWindowSize();
 
-        int columns = windowSize.ws_col;
-        int rows = windowSize.ws_row - 1;
+        int columns = windowSize.columns();
+        int rows = windowSize.rows() - 1;
 
         return new OutputValues(columns, rows);
     }

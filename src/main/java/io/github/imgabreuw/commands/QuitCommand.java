@@ -1,20 +1,20 @@
 package io.github.imgabreuw.commands;
 
-import io.github.imgabreuw.infrastructure.libc.LibC;
-import io.github.imgabreuw.infrastructure.libc.Termios;
+import io.github.imgabreuw.infrastructure.unix.UnixLibC;
+import io.github.imgabreuw.infrastructure.unix.UnixTermios;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class QuitCommand implements Command {
 
-    private final Termios originalAttributes;
+    private final UnixTermios originalAttributes;
 
     @Override
     public void execute() {
         System.out.print("\033[2J");
         System.out.print("\033[H");
 
-        LibC.INSTANCE.tcsetattr(LibC.SYSTEM_OUT_FD, LibC.TCSAFLUSH, originalAttributes);
+        UnixLibC.INSTANCE.tcsetattr(UnixLibC.SYSTEM_OUT_FD, UnixLibC.TCSAFLUSH, originalAttributes);
 
         System.exit(0);
     }

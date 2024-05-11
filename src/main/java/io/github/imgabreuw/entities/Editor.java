@@ -50,7 +50,31 @@ public class Editor {
     }
 
     public void moveToEnd() {
-        cursorX = columns - 1;
+        var line = currentLine();
+
+        if (line != null) {
+            cursorX = line.length();
+        }
+    }
+
+    public void pageUp() {
+        cursorY = offsetY;
+
+        for (int i = 0; i < rows; i++) {
+            moveUp();
+        }
+    }
+
+    public void pageDown() {
+        cursorY = offsetY + rows - 1;
+
+        if (cursorY > content.size()) {
+            cursorY = content.size();
+        }
+
+        for (int i = 0; i < rows; i++) {
+            moveDown();
+        }
     }
 
     public void scroll() {
@@ -69,5 +93,17 @@ public class Editor {
         if (cursorX < offsetX) {
             offsetX = cursorX;
         }
+    }
+
+    public void defaultMove() {
+        String newLine = currentLine();
+
+        if (newLine != null && cursorX > newLine.length()) {
+            cursorX = newLine.length();
+        }
+    }
+
+    private String currentLine() {
+        return cursorY < content.size() ? content.get(cursorY) : null;
     }
 }

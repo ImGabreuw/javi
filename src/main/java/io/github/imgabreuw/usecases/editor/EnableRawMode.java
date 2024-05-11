@@ -1,28 +1,28 @@
 package io.github.imgabreuw.usecases.editor;
 
-import io.github.imgabreuw.infrastructure.libc.LibC;
-import io.github.imgabreuw.infrastructure.libc.Termios;
+import io.github.imgabreuw.infrastructure.unix.UnixLibC;
+import io.github.imgabreuw.infrastructure.unix.UnixTermios;
 import io.github.imgabreuw.usecases.UseCase;
 
 public class EnableRawMode implements UseCase<EnableRawMode.InputValues, EnableRawMode.OutputValues> {
 
     @Override
     public OutputValues execute(InputValues input) {
-        Termios termios = new Termios();
-        int rc = LibC.INSTANCE.tcgetattr(LibC.SYSTEM_OUT_FD, termios);
+        UnixTermios unixTermios = new UnixTermios();
+        int rc = UnixLibC.INSTANCE.tcgetattr(UnixLibC.SYSTEM_OUT_FD, unixTermios);
 
         if (rc != 0) {
             System.err.println("There was a problem calling tcgetattr");
             System.exit(rc);
         }
 
-        Termios originalAttributes = Termios.of(termios);
+        UnixTermios originalAttributes = UnixTermios.of(unixTermios);
 
-        termios.c_lflag &= ~(LibC.ECHO | LibC.ICANON | LibC.IEXTEN | LibC.ISIG);
-        termios.c_iflag &= ~(LibC.IXON | LibC.ICRNL);
-        termios.c_oflag &= ~(LibC.OPOST);
+        unixTermios.c_lflag &= ~(UnixLibC.ECHO | UnixLibC.ICANON | UnixLibC.IEXTEN | UnixLibC.ISIG);
+        unixTermios.c_iflag &= ~(UnixLibC.IXON | UnixLibC.ICRNL);
+        unixTermios.c_oflag &= ~(UnixLibC.OPOST);
 
-        LibC.INSTANCE.tcsetattr(LibC.SYSTEM_OUT_FD, LibC.TCSAFLUSH, termios);
+        UnixLibC.INSTANCE.tcsetattr(UnixLibC.SYSTEM_OUT_FD, UnixLibC.TCSAFLUSH, unixTermios);
 
         return new OutputValues(originalAttributes);
     }
@@ -30,7 +30,7 @@ public class EnableRawMode implements UseCase<EnableRawMode.InputValues, EnableR
     public record InputValues() implements UseCase.InputValues {
     }
 
-    public record OutputValues(Termios termios) implements UseCase.OutputValues {
+    public record OutputValues(UnixTermios unixTermios) implements UseCase.OutputValues {
     }
 
 }

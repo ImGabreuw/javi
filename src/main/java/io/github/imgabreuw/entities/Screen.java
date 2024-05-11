@@ -29,7 +29,7 @@ public class Screen {
     }
 
     public Screen drawStatusBar() {
-        String statusMessage = "X:" + editor.getCursorX() + "/" + editor.getColumns() + " Y: " + editor.getCursorY() + "/" + editor.getRows();
+        String statusMessage = "X:" + editor.getCursorX() + " Y: " + editor.getCursorY();
         screen.append("\033[7m")
                 .append(statusMessage)
                 .append(" ".repeat(Math.max(0, editor.getColumns() - statusMessage.length())))
@@ -39,27 +39,31 @@ public class Screen {
 
     public Screen drawContent() {
         for (int i = 0; i < editor.getRows(); i++) {
-            int fileRow = i + editor.getOffsetY();
+            int lineIndex = editor.getOffsetY() + i;
 
-            if (fileRow >= editor.getContent().size()) {
+            if (lineIndex >= editor.getContent().size()) {
                 screen.append("~");
             } else {
-                var line = renderLine(editor.getContent().get(i), editor.getOffsetX(), editor.getColumns());
-                screen.append(line);
-            }
+                String line = editor.getContent().get(lineIndex);
+                int lengthToDraw = line.length() - editor.getOffsetX();
 
+                if (lengthToDraw < 0) {
+                    lengthToDraw = 0;
+                }
+                if (lengthToDraw > editor.getColumns()) {
+                    lengthToDraw = editor.getColumns();
+                }
+
+                if (lengthToDraw > 0) {
+                    screen.append(line, editor.getOffsetX(), editor.getOffsetX() + lengthToDraw);
+                }
+
+
+            }
             screen.append("\033[K\r\n");
         }
 
         return this;
-    }
-
-    private String renderLine(String line, int columnOffset, int screenColumns) {
-        int length = Math.max(0, line.length() - columnOffset);
-        if (length == 0) return "";
-
-        if (length > screenColumns) length = screenColumns;
-        return line.substring(columnOffset, columnOffset + length);
     }
 
     public String build() {
