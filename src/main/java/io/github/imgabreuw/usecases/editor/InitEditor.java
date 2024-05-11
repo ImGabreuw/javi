@@ -14,7 +14,7 @@ public class InitEditor implements UseCase<InitEditor.InputValues, InitEditor.Ou
         var windowSize = libCGateway.getWindowSize();
 
         int columns = windowSize.ws_col;
-        int rows = windowSize.ws_row;
+        int rows = windowSize.ws_row - 1;
 
         return new OutputValues(columns, rows);
     }
