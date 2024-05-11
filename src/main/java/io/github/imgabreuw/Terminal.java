@@ -1,54 +1,39 @@
 package io.github.imgabreuw;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import io.github.imgabreuw.commands.QuitCommand;
+import io.github.imgabreuw.gateways.LibCGateway;
+import io.github.imgabreuw.gateways.LibCGatewayImpl;
+import io.github.imgabreuw.usecases.editor.EnableRawMode;
+import io.github.imgabreuw.usecases.editor.InitEditor;
+import io.github.imgabreuw.usecases.keys.KeyObserver;
+import io.github.imgabreuw.usecases.screen.RefreshScreen;
 
 public class Terminal {
 
-    private static final Object lock = new Object();
-    private static volatile StringBuilder buffer = new StringBuilder();
-    private static volatile boolean running = true;
-    private static volatile boolean inputAvailable = false;
-
     public static void main(String[] args) {
-        // Thread para lidar com a entrada do usuário
-        Thread inputThread = new Thread(Terminal::handleInput);
-        inputThread.start();
+        LibCGateway libCGateway = new LibCGatewayImpl();
 
-        try {
-            while (running) {
-                synchronized (lock) {
-                    // Aguarda até que haja entrada disponível
-                    while (!inputAvailable) {
-                        lock.wait();
-                    }
-                    // Exibe o conteúdo do buffer
-                    System.out.print(buffer.toString());
-                    inputAvailable = false;
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        var enableRawMode = new EnableRawMode();
+        var originalAttributes = enableRawMode
+                .execute(new EnableRawMode.InputValues())
+                .termios();
+
+        var editor = new InitEditor(libCGateway);
+        var windowSize = editor.execute(new InitEditor.InputValues());
+
+        var refreshScreen = new RefreshScreen();
+        var inputValues = new RefreshScreen.InputValues(
+                windowSize.columns(),
+                windowSize.rows()
+        );
+
+        var keyObserver = new KeyObserver();
+        keyObserver.register('q', new QuitCommand(originalAttributes));
+
+        while (true) {
+            refreshScreen.execute(inputValues);
+            keyObserver.listen();
         }
     }
 
-    private static void handleInput() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            String line;
-            while (running && (line = reader.readLine()) != null) {
-                synchronized (lock) {
-                    if (line.equals(":q")) {
-                        running = false;
-                        break;
-                    }
-                    buffer.append(line).append("\n");
-                    inputAvailable = true;
-                    lock.notify(); // Notifica a thread principal para exibir o conteúdo
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
