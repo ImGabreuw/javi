@@ -1,5 +1,6 @@
 package io.github.imgabreuw.commands;
 
+import io.github.imgabreuw.gateways.Terminal;
 import io.github.imgabreuw.infrastructure.unix.UnixLibC;
 import io.github.imgabreuw.infrastructure.unix.UnixTermios;
 import lombok.RequiredArgsConstructor;
@@ -7,14 +8,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuitCommand implements Command {
 
-    private final UnixTermios originalAttributes;
+    private final Terminal terminal;
 
     @Override
     public void execute() {
         System.out.print("\033[2J");
         System.out.print("\033[H");
 
-        UnixLibC.INSTANCE.tcsetattr(UnixLibC.SYSTEM_OUT_FD, UnixLibC.TCSAFLUSH, originalAttributes);
+        terminal.disableRawMode();
 
         System.exit(0);
     }

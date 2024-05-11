@@ -11,6 +11,7 @@ public class InitEditor implements UseCase<InitEditor.InputValues, InitEditor.Ou
 
     @Override
     public OutputValues execute(InputValues input) {
+        terminal.enableRawMode();
         var windowSize = terminal.getWindowSize();
 
         int columns = windowSize.columns();
