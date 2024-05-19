@@ -7,6 +7,7 @@ public class CircularLinkedList {
     private Node head;
     private Node tail;
     private int size;
+
     private ArrayList<Node> clipboard;
 
     public CircularLinkedList() {
@@ -18,6 +19,7 @@ public class CircularLinkedList {
 
     public void add(String data) {
         Node newNode = new Node(data);
+
         if (head == null) {
             head = newNode;
             tail = newNode;
@@ -30,12 +32,17 @@ public class CircularLinkedList {
             head.prev = newNode;
             tail = newNode;
         }
+
         size++;
     }
 
     public void insert(int index, String data) {
-        if (index < 0 || index > size) throw new IndexOutOfBoundsException();
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+
         Node newNode = new Node(data);
+
         if (index == 0) {
             if (head == null) {
                 head = newNode;
@@ -51,20 +58,29 @@ public class CircularLinkedList {
             }
         } else {
             Node current = head;
+
             for (int i = 0; i < index - 1; i++) {
                 current = current.next;
             }
+
             newNode.next = current.next;
             newNode.prev = current;
             current.next.prev = newNode;
             current.next = newNode;
-            if (newNode.next == head) tail = newNode;
+
+            if (newNode.next == head) {
+                tail = newNode;
+            }
         }
+
         size++;
     }
 
     public void remove(int index) {
-        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
         if (index == 0) {
             if (size == 1) {
                 head = null;
@@ -83,15 +99,21 @@ public class CircularLinkedList {
             current.next.prev = current.prev;
             if (current == tail) tail = current.prev;
         }
+
         size--;
     }
 
     public String get(int index) {
-        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
         Node current = head;
+
         for (int i = 0; i < index; i++) {
             current = current.next;
         }
+
         return current.data;
     }
 
@@ -100,7 +122,9 @@ public class CircularLinkedList {
             System.out.println("Lista está vazia");
             return;
         }
+
         Node current = head;
+
         for (int i = 0; i < size; i++) {
             System.out.println((i + 1) + ": " + current.data);
             current = current.next;
@@ -114,6 +138,7 @@ public class CircularLinkedList {
     public void saveToFile(String filename) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             Node current = head;
+
             for (int i = 0; i < size; i++) {
                 writer.write(current.data);
                 writer.newLine();
@@ -127,6 +152,7 @@ public class CircularLinkedList {
     public void loadFromFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
+
             while ((line = reader.readLine()) != null) {
                 add(line);
             }
@@ -138,40 +164,52 @@ public class CircularLinkedList {
     public ArrayList<String> search(String element) {
         ArrayList<String> results = new ArrayList<>();
         Node current = head;
+
         for (int i = 0; i < size; i++) {
             if (current.data.contains(element)) {
                 results.add((i + 1) + ": " + current.data);
             }
+
             current = current.next;
         }
+
         return results;
     }
 
     public void replace(String oldElement, String newElement) {
         Node current = head;
+
         for (int i = 0; i < size; i++) {
             if (current.data.contains(oldElement)) {
                 current.data = current.data.replace(oldElement, newElement);
             }
+
             current = current.next;
         }
     }
 
     public void replaceInLine(String oldElement, String newElement, int line) {
-        if (line < 1 || line > size) throw new IndexOutOfBoundsException();
+        if (line < 1 || line > size) {
+            throw new IndexOutOfBoundsException();
+        }
+
         Node current = head;
+
         for (int i = 1; i < line; i++) {
             current = current.next;
         }
+
         current.data = current.data.replace(oldElement, newElement);
     }
 
     public void mark(int start, int end) {
         clipboard.clear();
         Node current = head;
+
         for (int i = 0; i < start - 1; i++) {
             current = current.next;
         }
+
         for (int i = start; i <= end; i++) {
             clipboard.add(current);
             current = current.next;
@@ -180,9 +218,11 @@ public class CircularLinkedList {
 
     public void copy() {
         ArrayList<Node> newClipboard = new ArrayList<>();
+
         for (Node node : clipboard) {
             newClipboard.add(new Node(node.data));
         }
+
         clipboard = newClipboard;
     }
 
@@ -190,11 +230,13 @@ public class CircularLinkedList {
         for (Node node : clipboard) {
             Node current = head;
             int index = 0;
+
             while (current != null) {
                 if (current == node) {
                     remove(index);
                     break;
                 }
+
                 current = current.next;
                 index++;
             }

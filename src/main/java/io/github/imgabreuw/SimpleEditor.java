@@ -12,38 +12,40 @@ public class SimpleEditor {
             System.out.print("> ");
             command = scanner.nextLine();
             String[] parts = command.split(" ");
+
             switch (parts[0]) {
                 case ":e":
-                    if (parts.length == 2) {
-                        list.loadFromFile(parts[1]);
-                        list.display();
-                    } else {
+                    if (parts.length != 2) {
                         System.out.println("Uso: :e nomeDoArquivo");
+                        break;
                     }
+
+                    list.loadFromFile(parts[1]);
+                    list.display();
                     break;
                 case ":w":
-                    if (parts.length == 1) {
-                        list.saveToFile("saida.txt");
-                    } else if (parts.length == 2) {
-                        list.saveToFile(parts[1]);
-                    } else {
-                        System.out.println("Uso: :w [nomeDoArquivo]");
+                    switch (parts.length) {
+                        case 1 -> list.saveToFile("temp.txt");
+                        case 2 -> list.saveToFile(parts[1]);
+                        default -> System.out.println("Uso: :w [nomeDoArquivo]");
                     }
                     break;
                 case ":q!":
                     System.exit(0);
                     break;
                 case ":v":
-                    if (parts.length == 3) {
-                        try {
-                            int inicio = Integer.parseInt(parts[1]);
-                            int fim = Integer.parseInt(parts[2]);
-                            list.mark(inicio, fim);
-                        } catch (NumberFormatException e) {
-                            System.out.println("Números de linha inválidos.");
-                        }
-                    } else {
+                    if (parts.length != 3) {
                         System.out.println("Uso: :v linhaInicial linhaFinal");
+                        break;
+                    }
+
+                    try {
+                        int start = Integer.parseInt(parts[1]);
+                        int end = Integer.parseInt(parts[2]);
+
+                        list.mark(start, end);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Números de linha inválidos.");
                     }
                     break;
                 case ":y":
@@ -53,133 +55,162 @@ public class SimpleEditor {
                     list.cut();
                     break;
                 case ":p":
-                    if (parts.length == 2) {
-                        try {
-                            int linha = Integer.parseInt(parts[1]);
-                            list.paste(linha);
-                            list.display();  
-                        } catch (NumberFormatException e) {
-                            System.out.println("Número de linha inválido.");
-                        }
-                    } else {
+                    if (parts.length != 2) {
                         System.out.println("Uso: :p númeroLinha");
+                        break;
+                    }
+
+                    try {
+                        int line = Integer.parseInt(parts[1]);
+
+                        list.paste(line);
+                        list.display();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Número de linha inválido.");
                     }
                     break;
                 case ":s":
                     if (parts.length == 1) {
-                        list.display();  
-                    } else if (parts.length == 3) {
-                        try {
-                            int inicio = Integer.parseInt(parts[1]);
-                            int fim = Integer.parseInt(parts[2]);
-                            for (int i = inicio - 1; i < fim; i++) {
-                                System.out.println((i + 1) + ": " + list.get(i));
-                            }
-                        } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                            System.out.println("Números de linha inválidos.");
-                        }
-                    } else {
+                        list.display();
+                        break;
+                    }
+
+                    if (parts.length != 3) {
                         System.out.println("Uso: :s [linhaInicial linhaFinal]");
+                        break;
+                    }
+
+                    try {
+                        int start = Integer.parseInt(parts[1]);
+                        int end = Integer.parseInt(parts[2]);
+
+                        for (int i = start - 1; i < end; i++) {
+                            System.out.println((i + 1) + ": " + list.get(i));
+                        }
+                    } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                        System.out.println("Números de linha inválidos.");
                     }
                     break;
                 case ":x":
-                    if (parts.length == 2) {
-                        try {
-                            int linha = Integer.parseInt(parts[1]);
-                            list.remove(linha - 1);
-                            list.display();
-                        } catch (NumberFormatException e) {
-                            System.out.println("Número de linha inválido.");
-                        }
-                    } else {
+                    if (parts.length != 2) {
                         System.out.println("Uso: :x númeroLinha");
+                        break;
+                    }
+
+                    try {
+                        int line = Integer.parseInt(parts[1]);
+
+                        list.remove(line - 1);
+                        list.display();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Número de linha inválido.");
                     }
                     break;
                 case ":xG":
-                    if (parts.length == 2) {
-                        try {
-                            int linha = Integer.parseInt(parts[1]);
-                            while (list.size() >= linha) {
-                                list.remove(list.size() - 1);
-                            }
-                            list.display();
-                        } catch (NumberFormatException e) {
-                            System.out.println("Número de linha inválido.");
-                        }
-                    } else {
+                    if (parts.length != 2) {
                         System.out.println("Uso: :xG númeroLinha");
+                        break;
+                    }
+
+                    try {
+                        int line = Integer.parseInt(parts[1]);
+
+                        while (list.size() >= line) {
+                            list.remove(list.size() - 1);
+                        }
+
+                        list.display();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Número de linha inválido.");
                     }
                     break;
                 case ":XG":
-                    if (parts.length == 2) {
-                        try {
-                            int linha = Integer.parseInt(parts[1]);
-                            for (int i = 1; i < linha; i++) {
-                                list.remove(0);
-                            }
-                            list.display();
-                        } catch (NumberFormatException e) {
-                            System.out.println("Número de linha inválido.");
-                        }
-                    } else {
+                    if (parts.length != 2) {
                         System.out.println("Uso: :XG númeroLinha");
+                        break;
+                    }
+
+                    try {
+                        int line = Integer.parseInt(parts[1]);
+
+                        for (int i = 1; i < line; i++) {
+                            list.remove(0);
+                        }
+
+                        list.display();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Número de linha inválido.");
                     }
                     break;
                 case ":/":
-                    if (parts.length == 2 || parts.length == 3 || parts.length == 4) {
-                        String termoBusca = parts[1];
-                        if (parts.length == 2) {
-                            list.search(termoBusca).forEach(System.out::println);
-                        } else if (parts.length == 3) {
-                            String termoSubstituto = parts[2];
-                            list.replace(termoBusca, termoSubstituto);
-                            list.display();
-                        } else {
-                            String termoSubstituto = parts[2];
-                            try {
-                                int linha = Integer.parseInt(parts[3]);
-                                list.replaceInLine(termoBusca, termoSubstituto, linha);
-                                list.display();
-                            } catch (NumberFormatException e) {
-                                System.out.println("Número de linha inválido.");
-                            }
-                        }
-                    } else {
+                    if (parts.length != 2 && parts.length != 3 && parts.length != 4) {
                         System.out.println("Uso: :/ termoBusca [termoSubstituto] [linha]");
+                        break;
+                    }
+
+                    String searchTerm = parts[1];
+
+                    if (parts.length == 2) {
+                        list.search(searchTerm).forEach(System.out::println);
+                        break;
+                    }
+
+                    if (parts.length == 3) {
+                        String replaceTerm = parts[2];
+                        list.replace(searchTerm, replaceTerm);
+                        list.display();
+                        break;
+                    }
+
+                    String replaceTerm = parts[2];
+
+                    try {
+                        int line = Integer.parseInt(parts[3]);
+
+                        list.replaceInLine(searchTerm, replaceTerm, line);
+                        list.display();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Número de linha inválido.");
                     }
                     break;
                 case ":a":
-                    if (parts.length >= 3) {
-                        try {
-                            int linha = Integer.parseInt(parts[1]);
-                            StringBuilder dados = new StringBuilder();
-                            for (int i = 2; i < parts.length; i++) {
-                                dados.append(parts[i]).append(" ");
-                            }
-                            list.insert(linha, dados.toString().trim());
-                            list.display();
-                        } catch (NumberFormatException e) {
-                            System.out.println("Número de linha inválido.");
-                        }
-                    } else {
+                    if (parts.length < 3) {
                         System.out.println("Uso: :a linha dados");
+                        break;
+                    }
+
+                    try {
+                        int line = Integer.parseInt(parts[1]);
+                        StringBuilder data = new StringBuilder();
+
+                        for (int i = 2; i < parts.length; i++) {
+                            data.append(parts[i]).append(" ");
+                        }
+
+                        list.insert(line, data.toString().trim());
+                        list.display();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Número de linha inválido.");
                     }
                     break;
                 case ":i":
-                    if (parts.length >= 3) {
-                        try {
-                            int linha = Integer.parseInt(parts[1]);
-                            StringBuilder dados = new StringBuilder();
-                            for (int i = 2; i < parts.length; i++) {
-                                dados.append(parts[i]).append(" ");
-                            }
-                            list.insert(linha - 1, dados.toString().trim());
-                            list.display();
-                        } catch (NumberFormatException e) {
-                            System.out.println("Número de linha inválido.");
-                        }
-                    } else {
+                    if (parts.length < 3) {
                         System.out.println("Uso: :i linha dados");
+                        break;
+                    }
+
+                    try {
+                        int line = Integer.parseInt(parts[1]);
+                        StringBuilder data = new StringBuilder();
+
+                        for (int i = 2; i < parts.length; i++) {
+                            data.append(parts[i]).append(" ");
+                        }
+
+                        list.insert(line - 1, data.toString().trim());
+                        list.display();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Número de linha inválido.");
                     }
                     break;
                 case ":help":
