@@ -50,7 +50,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.github.imgabreuw.Main</mainClass>
+                                    <mainClass>io.github.imgabreuw.SimpleEditor</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
