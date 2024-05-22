@@ -1,5 +1,11 @@
 package io.github.imgabreuw;
 
+/**
+ * INTEGRANTES:
+ * - Enzo Ribeiro (10418262)
+ * - Gabriel Ken Kazama Geronazzo (10418247)
+ * - Lucas Zanini (10417361)
+ */
 public class Node {
     String data;
     Node next;

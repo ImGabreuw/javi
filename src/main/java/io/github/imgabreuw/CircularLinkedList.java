@@ -3,6 +3,12 @@ package io.github.imgabreuw;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * INTEGRANTES:
+ * - Enzo Ribeiro (10418262)
+ * - Gabriel Ken Kazama Geronazzo (10418247)
+ * - Lucas Zanini (10417361)
+ */
 public class CircularLinkedList {
     private Node head;
     private Node tail;
