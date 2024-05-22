@@ -172,8 +172,15 @@ public class SimpleEditor {
 
                     if (parts.length == 3) {
                         String replaceTerm = parts[2];
-                        list.replace(searchTerm, replaceTerm);
+                        var affectedLines = list.replace(searchTerm, replaceTerm);
                         list.display();
+
+                        if (affectedLines == 0) {
+                            System.out.println("Nenhum linha foi modificada.");
+                            return;
+                        }
+
+                        System.out.printf("'%s' substituído por '%s' em %d linhas!%n", searchTerm, replaceTerm, affectedLines);
                         break;
                     }
 

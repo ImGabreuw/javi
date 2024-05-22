@@ -191,7 +191,7 @@ public class CircularLinkedList {
         return results;
     }
 
-    public void replace(String oldElement, String newElement) {
+    public int replace(String oldElement, String newElement) {
         int counter = 0;
         Node current = head;
 
@@ -204,12 +204,7 @@ public class CircularLinkedList {
             current = current.next;
         }
 
-        if (counter == 0) {
-            System.out.println("Nenhum linha foi modificada.");
-            return;
-        }
-
-        System.out.printf("'%s' substituído por '%s' em %d linhas!%n", oldElement, newElement, counter);
+        return counter;
     }
 
     public void replaceInLine(String oldElement, String newElement, int line) {
