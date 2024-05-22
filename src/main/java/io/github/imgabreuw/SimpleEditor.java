@@ -29,8 +29,14 @@ public class SimpleEditor {
                         break;
                     }
 
-                    list.loadFromFile(parts[1]);
-                    list.display();
+                    var filename = parts[1];
+                    var isLoaded = list.loadFromFile(filename);
+
+                    if (isLoaded) {
+                        System.out.printf("Arquivo '%s' lido com sucesso!%n", filename);
+                        list.display();
+                    }
+
                     break;
                 case ":w":
                     switch (parts.length) {
@@ -152,7 +158,7 @@ public class SimpleEditor {
                     }
                     break;
                 case ":/":
-                    if (parts.length != 2 && parts.length != 3 && parts.length != 4) {
+                    if (parts.length < 2 || parts.length > 4) {
                         System.out.println("Uso: :/ termoBusca [termoSubstituto] [linha]");
                         break;
                     }
@@ -183,8 +189,9 @@ public class SimpleEditor {
                     }
                     break;
                 case ":a":
-                    if (parts.length < 3) {
-                        System.out.println("Uso: :a linha dados");
+                case ":i":
+                    if (parts.length < 2) {
+                        System.out.println("Uso: :" + parts[0] + " linha [dados]");
                         break;
                     }
 
@@ -192,31 +199,17 @@ public class SimpleEditor {
                         int line = Integer.parseInt(parts[1]);
                         StringBuilder data = new StringBuilder();
 
-                        for (int i = 2; i < parts.length; i++) {
-                            data.append(parts[i]).append(" ");
+                        if (parts.length > 2) {
+                            for (int i = 2; i < parts.length; i++) {
+                                data.append(parts[i]).append(" ");
+                            }
+                        }
+
+                        if (parts[0].equals(":i")) {
+                            --line;
                         }
 
                         list.insert(line, data.toString().trim());
-                        list.display();
-                    } catch (NumberFormatException e) {
-                        System.out.println("Número de linha inválido.");
-                    }
-                    break;
-                case ":i":
-                    if (parts.length < 3) {
-                        System.out.println("Uso: :i linha dados");
-                        break;
-                    }
-
-                    try {
-                        int line = Integer.parseInt(parts[1]);
-                        StringBuilder data = new StringBuilder();
-
-                        for (int i = 2; i < parts.length; i++) {
-                            data.append(parts[i]).append(" ");
-                        }
-
-                        list.insert(line - 1, data.toString().trim());
                         list.display();
                     } catch (NumberFormatException e) {
                         System.out.println("Número de linha inválido.");

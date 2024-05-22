@@ -158,16 +158,22 @@ public class CircularLinkedList {
         }
     }
 
-    public void loadFromFile(String filename) {
+    public boolean loadFromFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
 
             while ((line = reader.readLine()) != null) {
                 add(line);
             }
+
+            return true;
+        } catch (FileNotFoundException e) {
+            System.out.printf("Arquivo '%s' não existe!%n", filename);
         } catch (IOException e) {
             System.out.println("Erro ao carregar do arquivo: " + e.getMessage());
         }
+
+        return false;
     }
 
     public ArrayList<String> search(String element) {
@@ -186,15 +192,24 @@ public class CircularLinkedList {
     }
 
     public void replace(String oldElement, String newElement) {
+        int counter = 0;
         Node current = head;
 
         for (int i = 0; i < size; i++) {
             if (current.data.contains(oldElement)) {
                 current.data = current.data.replace(oldElement, newElement);
+                ++counter;
             }
 
             current = current.next;
         }
+
+        if (counter == 0) {
+            System.out.println("Nenhum linha foi modificada.");
+            return;
+        }
+
+        System.out.printf("'%s' substituído por '%s' em %d linhas!%n", oldElement, newElement, counter);
     }
 
     public void replaceInLine(String oldElement, String newElement, int line) {
@@ -212,6 +227,11 @@ public class CircularLinkedList {
     }
 
     public void mark(int start, int end) {
+        if (start <= 0 || start > size || end <= 0 || end > size || start > end) {
+            System.out.printf("Intervalo de linha %d - %d inválido!%n", start, end);
+            return;
+        }
+
         clipboard.clear();
         Node current = head;
 
