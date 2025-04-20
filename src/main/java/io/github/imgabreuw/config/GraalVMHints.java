@@ -22,7 +22,13 @@ public class GraalVMHints implements RuntimeHintsRegistrar {
                 .registerType(PageUpCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS)
                 .registerType(PageDownCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS)
                 .registerType(io.github.imgabreuw.infrastructure.unix.UnixTermios.class, MemberCategory.DECLARED_FIELDS, MemberCategory.INVOKE_DECLARED_METHODS)
+                .registerType(io.github.imgabreuw.infrastructure.unix.UnixLibC.class, MemberCategory.INVOKE_DECLARED_METHODS, MemberCategory.INVOKE_PUBLIC_METHODS);
         ;
+
+        hints.proxies()
+                .registerJdkProxy(io.github.imgabreuw.infrastructure.unix.UnixLibC.class)
+        ;
+
 
         hints.jni()
                 .registerType(System.class, type ->
@@ -38,7 +44,9 @@ public class GraalVMHints implements RuntimeHintsRegistrar {
                                 .withField("c_lflag")
                                 .withField("c_cc")
                                 .withMethod("getFieldOrder", TypeReference.listOf(), ExecutableMode.INTROSPECT)
-                );
+                )
+                .registerType(io.github.imgabreuw.infrastructure.unix.UnixLibC.class)
+        ;
     }
 
 }
