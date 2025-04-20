@@ -1,2 +1,2 @@
 [tools]
-java = "zulu-21.42.19"
+java = "oracle-graalvm-21.0.7"
