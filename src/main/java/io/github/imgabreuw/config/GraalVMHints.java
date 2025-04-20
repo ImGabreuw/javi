@@ -22,7 +22,8 @@ public class GraalVMHints implements RuntimeHintsRegistrar {
                 .registerType(PageUpCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS)
                 .registerType(PageDownCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS)
                 .registerType(io.github.imgabreuw.infrastructure.unix.UnixTermios.class, MemberCategory.DECLARED_FIELDS, MemberCategory.INVOKE_DECLARED_METHODS)
-                .registerType(io.github.imgabreuw.infrastructure.unix.UnixLibC.class, MemberCategory.INVOKE_DECLARED_METHODS, MemberCategory.INVOKE_PUBLIC_METHODS);
+                .registerType(io.github.imgabreuw.infrastructure.unix.UnixLibC.class, MemberCategory.INVOKE_DECLARED_METHODS, MemberCategory.INVOKE_PUBLIC_METHODS)
+                .registerType(io.github.imgabreuw.infrastructure.unix.UnixWinsize.class, MemberCategory.DECLARED_FIELDS, MemberCategory.INVOKE_DECLARED_METHODS);
         ;
 
         hints.proxies()
@@ -46,6 +47,13 @@ public class GraalVMHints implements RuntimeHintsRegistrar {
                                 .withMethod("getFieldOrder", TypeReference.listOf(), ExecutableMode.INTROSPECT)
                 )
                 .registerType(io.github.imgabreuw.infrastructure.unix.UnixLibC.class)
+                .registerType(io.github.imgabreuw.infrastructure.unix.UnixWinsize.class, type ->
+                        type.withField("ws_row")
+                                .withField("ws_col")
+                                .withField("ws_xpixel")
+                                .withField("ws_ypixel")
+                                .withMethod("getFieldOrder", TypeReference.listOf(), ExecutableMode.INTROSPECT)
+                )
         ;
     }
 

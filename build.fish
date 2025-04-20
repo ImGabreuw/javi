@@ -16,6 +16,8 @@ end
 
 # Compilar o projeto
 echo "Compilando o projeto com native-image..."
-mvn -Pnative clean package native:compile
+
+# Para resolver o segfault, adicione estas opções de compilação:
+mvn -Pnative clean package native:compile -Dspring.native.remove-yaml-support=true -Dspring.native.verbose=true -Dspring.aot.enabled=true -Dspring.spel.ignore=true
 
 echo "Compilação concluída."
