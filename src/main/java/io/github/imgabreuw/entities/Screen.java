@@ -16,7 +16,7 @@ public class Screen {
     private final Editor editor;
 
     // Controle de FPS para debounce de renderização
-    private static final int DEFAULT_FPS = 30;
+    private static final int DEFAULT_FPS = 60;
     private static final long FRAME_TIME_MS = 1000 / DEFAULT_FPS;
     private static final ScheduledExecutorService renderScheduler = Executors.newSingleThreadScheduledExecutor();
     private static final AtomicBoolean renderPending = new AtomicBoolean(false);
