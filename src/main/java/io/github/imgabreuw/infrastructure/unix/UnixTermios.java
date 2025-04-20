@@ -3,6 +3,7 @@ package io.github.imgabreuw.infrastructure.unix;
 import com.sun.jna.Structure;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 @Structure.FieldOrder(value = {"c_iflag", "c_oflag", "c_cflag", "c_lflag", "c_cc"})
@@ -21,6 +22,11 @@ public class UnixTermios extends Structure {
         copy.c_lflag = t.c_lflag;
         copy.c_cc = t.c_cc.clone();
         return copy;
+    }
+
+    @Override
+    protected List<String> getFieldOrder() {
+        return Arrays.asList("c_iflag", "c_oflag", "c_cflag", "c_lflag", "c_cc");
     }
 
     @Override

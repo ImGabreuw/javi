@@ -20,7 +20,9 @@ public class GraalVMHints implements RuntimeHintsRegistrar {
                 .registerType(MoveToHomeCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS)
                 .registerType(MoveToEndCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS)
                 .registerType(PageUpCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS)
-                .registerType(PageDownCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS);
+                .registerType(PageDownCommand.class, MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS)
+                .registerType(io.github.imgabreuw.infrastructure.unix.UnixTermios.class, MemberCategory.DECLARED_FIELDS, MemberCategory.INVOKE_DECLARED_METHODS)
+        ;
 
         hints.jni()
                 .registerType(System.class, type ->
@@ -28,6 +30,14 @@ public class GraalVMHints implements RuntimeHintsRegistrar {
                 )
                 .registerType(com.sun.jna.Pointer.class, type ->
                         type.withField("peer")
+                )
+                .registerType(io.github.imgabreuw.infrastructure.unix.UnixTermios.class, type ->
+                        type.withField("c_iflag")
+                                .withField("c_oflag")
+                                .withField("c_cflag")
+                                .withField("c_lflag")
+                                .withField("c_cc")
+                                .withMethod("getFieldOrder", TypeReference.listOf(), ExecutableMode.INTROSPECT)
                 );
     }
 
