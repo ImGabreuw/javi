@@ -4,6 +4,7 @@ import io.github.imgabreuw.commands.*;
 import io.github.imgabreuw.config.GraalVMHints;
 import io.github.imgabreuw.entities.Editor;
 import io.github.imgabreuw.gateways.Terminal;
+import io.github.imgabreuw.shared.KeyCode;
 import io.github.imgabreuw.usecases.editor.InitEditor;
 import io.github.imgabreuw.usecases.editor.OpenFile;
 import io.github.imgabreuw.usecases.keys.CommandHandler;
@@ -13,6 +14,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportRuntimeHints;
+
+import static io.github.imgabreuw.shared.KeyCode.*;
 
 @SpringBootApplication
 @ImportRuntimeHints(GraalVMHints.class)
@@ -41,14 +44,14 @@ public class JaviApplication {
 
             var commandHandler = new CommandHandler();
             commandHandler.register(":q", new QuitCommand(terminal));
-            commandHandler.register("\033[A", new MoveUpCommand(editor));
-            commandHandler.register("\033[B", new MoveDownCommand(editor));
-            commandHandler.register("\033[C", new MoveRightCommand(editor));
-            commandHandler.register("\033[D", new MoveLeftCommand(editor));
-            commandHandler.register("\033[H", new MoveToHomeCommand(editor));
-            commandHandler.register("\033[F", new MoveToEndCommand(editor));
-            commandHandler.register("\033[5", new PageUpCommand(editor));
-            commandHandler.register("\033[6", new PageDownCommand(editor));
+            commandHandler.register(MOVE_UP.getCode(), new MoveUpCommand(editor));
+            commandHandler.register(MOVE_DOWN.getCode(), new MoveDownCommand(editor));
+            commandHandler.register(MOVE_RIGHT.getCode(), new MoveRightCommand(editor));
+            commandHandler.register(MOVE_LEFT.getCode(), new MoveLeftCommand(editor));
+            commandHandler.register(MOVE_HOME.getCode(), new MoveToHomeCommand(editor));
+            commandHandler.register(MOVE_END.getCode(), new MoveToEndCommand(editor));
+            commandHandler.register(PAGE_UP.getCode(), new PageUpCommand(editor));
+            commandHandler.register(PAGE_DOWN.getCode(), new PageDownCommand(editor));
 
             while (true) {
                 editor.scroll();
