@@ -2,14 +2,25 @@ package io.github.imgabreuw.entities;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
 public class Screen {
 
     private final StringBuilder screen = new StringBuilder();
-
     private final Editor editor;
+
+    // Controle de FPS para debounce de renderização
+    private static final int DEFAULT_FPS = 60;
+    private static final long FRAME_TIME_MS = 1000 / DEFAULT_FPS;
+    private static final ScheduledExecutorService renderScheduler = Executors.newSingleThreadScheduledExecutor();
+    private static final AtomicBoolean renderPending = new AtomicBoolean(false);
+    private static long lastRenderTime = 0;
 
     public static Screen builder(Editor editor) {
         return new Screen(editor);
@@ -57,12 +68,25 @@ public class Screen {
                 if (lengthToDraw > 0) {
                     screen.append(line, editor.getOffsetX(), editor.getOffsetX() + lengthToDraw);
                 }
-
-
             }
             screen.append("\033[K\r\n");
         }
 
+        return this;
+    }
+
+    public Screen clearScreen() {
+        screen.append("\033[2J"); // Limpa toda a tela
+        return this;
+    }
+
+    public Screen hideCursor() {
+        screen.append("\033[?25l"); // Oculta o cursor durante renderização
+        return this;
+    }
+
+    public Screen showCursor() {
+        screen.append("\033[?25h"); // Mostra o cursor após posicionar
         return this;
     }
 
@@ -71,7 +95,27 @@ public class Screen {
     }
 
     public void render() {
-        System.out.println(screen);
+        long currentTime = System.currentTimeMillis();
+        long timeSinceLastRender = currentTime - lastRenderTime;
+        if (timeSinceLastRender >= FRAME_TIME_MS && renderPending.compareAndSet(false, true)) {
+            System.out.print(screen);
+            System.out.flush();
+            lastRenderTime = System.currentTimeMillis();
+            renderPending.set(false);
+        } else {
+            if(renderPending.compareAndSet(false, true)) {
+                long delayTime = Math.max(0, FRAME_TIME_MS - timeSinceLastRender);
+                renderScheduler.schedule(() -> {
+                    System.out.print(screen);
+                    System.out.flush();
+                    lastRenderTime = System.currentTimeMillis();
+                    renderPending.set(false);
+                }, delayTime, TimeUnit.MILLISECONDS);
+            }
+        }
     }
 
+    public static void shutdown() {
+        renderScheduler.shutdownNow();
+    }
 }

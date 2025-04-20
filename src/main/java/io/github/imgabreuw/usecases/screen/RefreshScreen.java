@@ -11,10 +11,13 @@ public class RefreshScreen implements UseCase<RefreshScreen.InputValues, Refresh
         var editor = input.editor();
 
         Screen.builder(editor)
+                .hideCursor()
                 .setCursorToTopLeft()
+                .clearScreen()
                 .drawContent()
                 .drawStatusBar()
                 .drawCursor()
+                .showCursor()
                 .render();
 
         return new OutputValues();
